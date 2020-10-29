@@ -8,8 +8,8 @@ import java.util.stream.IntStream;
 
 public class compareTest {
 
-    final private static int vertex = 30;         //点数
-    final private static double threshold = 0.2;   //断边概率
+    final private static int vertex = 5;         //点数
+    final private static double threshold = 0.3;   //断边概率
     final private static int MAX = 100;            //权值最大值
     final private static int MIN = 1;              //权值最小值
     final private static int[][] b = new int[vertex + 1][vertex + 1];    //邻接矩阵
@@ -34,19 +34,21 @@ public class compareTest {
             }
         }
 
-//        for (int i : IntStream.range(0, vertex + 1).toArray()) {
-//            System.out.println(Arrays.toString(b[i]));              //检查
-//        }
+        for (int i : IntStream.range(0, vertex + 1).toArray()) {
+            System.out.println(Arrays.toString(b[i]));              //检查
+        }
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 60000)
     public void testBack4TSP() {
         back4TSP.backtrack4TSP(b, vertex);
+        System.out.println(back4TSP.bestc);
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 60000)
     public void testBb4TSP() {
         bb4TSP.bb4TSP(b, vertex);
+        System.out.println("\nCost: " + bb4TSP.getMinCost());
     }
 
 }

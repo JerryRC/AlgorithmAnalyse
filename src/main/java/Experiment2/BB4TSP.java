@@ -77,9 +77,13 @@ public class BB4TSP {
             result += cMatrix[liveNode.get(i - 1)][liveNode.get(i)];
         }
 
-        //如果是叶子节点，直接闭合回路，计算最后结果
+        //如果是叶子节点，直接检查是否可以闭合回路，可以则计算最后结果，否则返回一个大数表示不可达
         if (level == liveNode.size()) {
-            result += cMatrix[liveNode.get(level - 1)][liveNode.get(0)];
+            int closeV = cMatrix[liveNode.get(level - 1)][liveNode.get(0)];
+            if(closeV == NoEdge){
+                return Integer.MAX_VALUE;
+            }
+            result += closeV;
             return result;
         }
 
@@ -165,9 +169,13 @@ public class BB4TSP {
             result += cMatrix[liveNode.get(i - 1)][liveNode.get(i)];
         }
 
-        //如果是叶子节点，直接闭合回路，计算最后结果
+        //如果是叶子节点，直接检查是否可以闭合回路，可以则计算最后结果，否则返回一个大数表示不可达
         if (level == liveNode.size()) {
-            result += cMatrix[liveNode.get(level - 1)][liveNode.get(0)];
+            int closeV = cMatrix[liveNode.get(level - 1)][liveNode.get(0)];
+            if(closeV == NoEdge){
+                return Integer.MAX_VALUE;
+            }
+            result += closeV;
             return result;
         }
 
@@ -277,11 +285,11 @@ public class BB4TSP {
                 level = cNode.level;
                 liveNode = new Vector<>(cNode.liveNode);
 
-                if (level == n) { //优先队列出来的是叶子，那么一定是解
-                    bestH = new Vector<>(cNode.liveNode);
-                    setMinCost(cNode.lcost);
-                    break;
-                }
+//                if (level == n) { //优先队列出来的是叶子，那么一定是解
+//                    bestH = new Vector<>(cNode.liveNode);
+//                    setMinCost(cNode.lcost);
+//                    break;
+//                }
 
                 for (int j = level; j < n; ++j) {
                     if (cMatrix[liveNode.get(level - 1)][liveNode.get(j)] != NoEdge) {
