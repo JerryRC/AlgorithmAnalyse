@@ -80,7 +80,7 @@ public class BB4TSP {
         //如果是叶子节点，直接检查是否可以闭合回路，可以则计算最后结果，否则返回一个大数表示不可达
         if (level == liveNode.size()) {
             int closeV = cMatrix[liveNode.get(level - 1)][liveNode.get(0)];
-            if(closeV == NoEdge){
+            if (closeV == NoEdge) {
                 return Integer.MAX_VALUE;
             }
             result += closeV;
@@ -172,7 +172,7 @@ public class BB4TSP {
         //如果是叶子节点，直接检查是否可以闭合回路，可以则计算最后结果，否则返回一个大数表示不可达
         if (level == liveNode.size()) {
             int closeV = cMatrix[liveNode.get(level - 1)][liveNode.get(0)];
-            if(closeV == NoEdge){
+            if (closeV == NoEdge) {
                 return Integer.MAX_VALUE;
             }
             result += closeV;

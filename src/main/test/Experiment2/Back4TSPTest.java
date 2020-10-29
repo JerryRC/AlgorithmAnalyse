@@ -20,14 +20,14 @@ public class Back4TSPTest {
         back4TSP.backtrack4TSP(b, n);
         Assert.assertEquals(25, back4TSP.bestc);
 
-        b= new int[][]
+        b = new int[][]
                 {{-1,-1,-1,-1,-1,-1},
                 {-1, -1, 3, 1, 5, 8},
                 {-1, 3, -1, 6, 7, 9},
                 {-1, 1, 6, -1, 4, 2},
                 {-1, 5, 7, 4, -1, 3},
                 {-1, 8, 9, 2, 3, -1}};
-        n=5;
+        n = 5;
         back4TSP.backtrack4TSP(b, n);
         Assert.assertEquals(16, back4TSP.bestc);
     }
