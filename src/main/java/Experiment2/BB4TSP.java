@@ -78,7 +78,7 @@ public class BB4TSP {
         }
 
         //如果是叶子节点，直接闭合回路，计算最后结果
-        if(level == liveNode.size()) {
+        if (level == liveNode.size()) {
             result += cMatrix[liveNode.get(level - 1)][liveNode.get(0)];
             return result;
         }
@@ -137,12 +137,12 @@ public class BB4TSP {
         result++;   //向上取整
         result /= 2;
 
-        System.out.print("[ ");
-        for (int i = 0; i < level; ++i) {
-            System.out.print(liveNode.get(i) + " ");
-        }
-        System.out.print("]  ");
-        System.out.println(result);
+//        System.out.print("[ ");
+//        for (int i = 0; i < level; ++i) {
+//            System.out.print(liveNode.get(i) + " ");
+//        }
+//        System.out.print("]  ");
+//        System.out.println(result);
 
         return result == 0 ? -1 : result;
     }
@@ -166,7 +166,7 @@ public class BB4TSP {
         }
 
         //如果是叶子节点，直接闭合回路，计算最后结果
-        if(level == liveNode.size()) {
+        if (level == liveNode.size()) {
             result += cMatrix[liveNode.get(level - 1)][liveNode.get(0)];
             return result;
         }
@@ -233,12 +233,12 @@ public class BB4TSP {
         result++;   //向上取整
         result /= 2;
 
-        System.out.print("[ ");
-        for (int i = 0; i < level; ++i) {
-            System.out.print(liveNode.get(i) + " ");
-        }
-        System.out.print("]  ");
-        System.out.println(result);
+//        System.out.print("[ ");
+//        for (int i = 0; i < level; ++i) {
+//            System.out.print(liveNode.get(i) + " ");
+//        }
+//        System.out.print("]  ");
+//        System.out.println(result);
 
         return result == 0 ? -1 : result;
     }
@@ -264,8 +264,8 @@ public class BB4TSP {
         if (minCost != Integer.MAX_VALUE) {  //由于采用了非零边，如果上界计算出来为0，则代表一个解都没有，直接退出
             int level = 1;//0-level的城市是已经排好的
 
-//            int lcost = computeLB(liveNode, level, cMatrix); //代价的下界
-            int lcost = computeSymLB(liveNode, level, cMatrix); //代价的下界
+            int lcost = computeLB(liveNode, level, cMatrix); //代价的下界
+//            int lcost = computeSymLB(liveNode, level, cMatrix); //代价的下界
 
             HeapNode cNode = new HeapNode(liveNode, lcost, level);  //根节点
             priorHeap.add(cNode);
@@ -284,17 +284,22 @@ public class BB4TSP {
                 }
 
                 for (int j = level; j < n; ++j) {
-                    if (cMatrix[liveNode.get(level-1)][liveNode.get(j)] != NoEdge) {
+                    if (cMatrix[liveNode.get(level - 1)][liveNode.get(j)] != NoEdge) {
                         int tmp = liveNode.get(level);  //level城的下一个
                         liveNode.set(level, liveNode.get(j));
                         liveNode.set(j, tmp);
 
                         level++;
-//                        lcost = computeLB(liveNode, level, cMatrix);
-                        lcost = computeSymLB(liveNode, level, cMatrix);
+                        lcost = computeLB(liveNode, level, cMatrix);
+//                        lcost = computeSymLB(liveNode, level, cMatrix);
                         if (lcost < getMinCost()) {
                             cNode = new HeapNode(new Vector<>(liveNode), lcost, level);  //插入新节点
                             priorHeap.add(cNode);
+
+                            if (level == n) { //如果新的点是叶子，那么更新界
+                                bestH = new Vector<>(cNode.liveNode);
+                                setMinCost(cNode.lcost);
+                            }
                         }
                         level--;
 
