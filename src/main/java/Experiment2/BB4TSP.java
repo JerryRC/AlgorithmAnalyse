@@ -76,6 +76,13 @@ public class BB4TSP {
         for (int i : IntStream.range(1, level).toArray()) {
             result += cMatrix[liveNode.get(i - 1)][liveNode.get(i)];
         }
+
+        //如果是叶子节点，直接闭合回路，计算最后结果
+        if(level == liveNode.size()) {
+            result += cMatrix[liveNode.get(level - 1)][liveNode.get(0)];
+            return result;
+        }
+
         result *= 2;
 
         //r1 不在路径上的最小入度，列最小
@@ -157,6 +164,13 @@ public class BB4TSP {
         for (int i : IntStream.range(1, level).toArray()) {
             result += cMatrix[liveNode.get(i - 1)][liveNode.get(i)];
         }
+
+        //如果是叶子节点，直接闭合回路，计算最后结果
+        if(level == liveNode.size()) {
+            result += cMatrix[liveNode.get(level - 1)][liveNode.get(0)];
+            return result;
+        }
+
         result *= 2;
 
         if (level != 1) {//r1 不在路径上的最小入度，列最小
@@ -250,8 +264,8 @@ public class BB4TSP {
         if (minCost != Integer.MAX_VALUE) {  //由于采用了非零边，如果上界计算出来为0，则代表一个解都没有，直接退出
             int level = 1;//0-level的城市是已经排好的
 
-            int lcost = computeLB(liveNode, level, cMatrix); //代价的下界
-//            int lcost = computeSymLB(liveNode, level, cMatrix); //代价的下界
+//            int lcost = computeLB(liveNode, level, cMatrix); //代价的下界
+            int lcost = computeSymLB(liveNode, level, cMatrix); //代价的下界
 
             HeapNode cNode = new HeapNode(liveNode, lcost, level);  //根节点
             priorHeap.add(cNode);
@@ -276,8 +290,8 @@ public class BB4TSP {
                         liveNode.set(j, tmp);
 
                         level++;
-                        lcost = computeLB(liveNode, level, cMatrix);
-//                        lcost = computeSymLB(liveNode, level, cMatrix);
+//                        lcost = computeLB(liveNode, level, cMatrix);
+                        lcost = computeSymLB(liveNode, level, cMatrix);
                         if (lcost < getMinCost()) {
                             cNode = new HeapNode(new Vector<>(liveNode), lcost, level);  //插入新节点
                             priorHeap.add(cNode);
