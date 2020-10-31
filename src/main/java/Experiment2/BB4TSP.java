@@ -27,12 +27,11 @@ public class BB4TSP {
 
     Comparator<HeapNode> cmp = Comparator.comparingInt(e -> e.lcost);
 
-    private PriorityQueue<HeapNode> priorHeap = new PriorityQueue<HeapNode>(100, cmp);//存储活节点
-    private Vector<Integer> bestH = new Vector<Integer>();
+    private final PriorityQueue<HeapNode> priorHeap = new PriorityQueue<>(100, cmp);//存储活节点
+    private Vector<Integer> bestH = new Vector<>();
 
 
-    @SuppressWarnings("rawtypes")
-    public static class HeapNode implements Comparable {
+    public static class HeapNode implements Comparable<HeapNode> {
         Vector<Integer> liveNode;//城市排列
         int lcost; //代价的下界
         int level;//0-level的城市是已经排好的
@@ -40,36 +39,31 @@ public class BB4TSP {
         //构造方法
         public HeapNode(Vector<Integer> node, int lb, int lev) {
             liveNode = new Vector<>(node);
-//            liveNode.addAll(0, node);
             lcost = lb;
             level = lev;
         }
 
         @Override
-        public int compareTo(Object x) {//升序排列, 每一次pollFirst
-            int xu = ((HeapNode) x).lcost;
-            if (lcost < xu) return -1;
-            if (lcost == xu) return 0;
-            return 1;
+        public int compareTo(HeapNode heapNode) {//升序排列, 每一次pollFirst
+            int xu = heapNode.lcost;
+            return Integer.compare(lcost, xu);
         }
 
         public boolean equals(Object x) {
-            return lcost == ((HeapNode) x).lcost;
+            return (x instanceof HeapNode) && lcost == ((HeapNode) x).lcost;
         }
 
     }
 
     /**
-     * 计算部分解的下界。
-     * 这里由于是处理非对称矩阵，故采取行列分别取最小值的算法
+     * 这个函数用于计算已选路径的实际开销。
      *
      * @param liveNode 城市的排列
      * @param level    当前确定的城市的个数.
      * @param cMatrix  邻接矩阵，第0行，0列不算
-     * @throws IllegalArgumentException 参数错误
+     * @return 已选路径的开销
      */
-    public int computeLB(Vector<Integer> liveNode, int level, int[][] cMatrix) {
-        //TODO
+    private int countSelectedPaths(Vector<Integer> liveNode, int level, int[][] cMatrix) {
         int result = 0;
 
         //当前已选择路径求和
@@ -88,6 +82,25 @@ public class BB4TSP {
         }
 
         result *= 2;
+        return result;
+    }
+
+
+    /**
+     * 计算部分解的下界。
+     * 这里由于是处理非对称矩阵，故采取行列分别取最小值的算法
+     *
+     * @param liveNode 城市的排列
+     * @param level    当前确定的城市的个数.
+     * @param cMatrix  邻接矩阵，第0行，0列不算
+     * @throws IllegalArgumentException 参数错误
+     */
+    public int computeLB(Vector<Integer> liveNode, int level, int[][] cMatrix) {
+        //TODO
+        int result = countSelectedPaths(liveNode, level, cMatrix);
+        if (level == liveNode.size()) {
+            return result;
+        }
 
         //r1 不在路径上的最小入度，列最小
         int min = Integer.MAX_VALUE;
@@ -162,24 +175,11 @@ public class BB4TSP {
      */
     public int computeSymLB(Vector<Integer> liveNode, int level, int[][] cMatrix) {
         //TODO
-        int result = 0;
-
-        //当前已选择路径求和
-        for (int i : IntStream.range(1, level).toArray()) {
-            result += cMatrix[liveNode.get(i - 1)][liveNode.get(i)];
-        }
-
-        //如果是叶子节点，直接检查是否可以闭合回路，可以则计算最后结果，否则返回一个大数表示不可达
+        int result = countSelectedPaths(liveNode, level, cMatrix);
         if (level == liveNode.size()) {
-            int closeV = cMatrix[liveNode.get(level - 1)][liveNode.get(0)];
-            if (closeV == NoEdge) {
-                return Integer.MAX_VALUE;
-            }
-            result += closeV;
             return result;
         }
 
-        result *= 2;
 
         if (level != 1) {//r1 不在路径上的最小入度，列最小
             int min = Integer.MAX_VALUE;
@@ -260,7 +260,7 @@ public class BB4TSP {
      */
     public int bb4TSP(int[][] cMatrix, int n) {
         //构造初始节点
-        Vector<Integer> liveNode = new Vector<Integer>();//城市排列
+        Vector<Integer> liveNode = new Vector<>();//城市排列
         for (int i = 1; i <= n; i++) liveNode.add(i);
 
         //深搜找到一个解作为上界

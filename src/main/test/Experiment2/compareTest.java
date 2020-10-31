@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 
 public class compareTest {
 
-    final private static int vertex = 5;         //点数
+    final private static int vertex = 15;         //点数
     final private static double threshold = 0.3;   //断边概率
     final private static int MAX = 100;            //权值最大值
     final private static int MIN = 1;              //权值最小值
@@ -35,7 +35,7 @@ public class compareTest {
         }
 
         for (int i : IntStream.range(0, vertex + 1).toArray()) {
-            System.out.println(Arrays.toString(b[i]));              //检查
+            System.out.println(Arrays.toString(b[i]));              //输出矩阵检查
         }
     }
 
